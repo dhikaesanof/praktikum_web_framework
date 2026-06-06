@@ -12,7 +12,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return Article::all();
+        return Article::with('user')->get();
     }
 
     /**
@@ -30,10 +30,14 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
         ]);
 
-        return Article::create($validated);
+        return Article::create([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'user_id' => auth()->id()
+        ]);
     }
 
     /**
@@ -57,6 +61,12 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        if ($article->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
         $validated = $request->validate([
             'title' => 'required',
             'content' => 'required'
