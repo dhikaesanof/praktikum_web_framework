@@ -27,11 +27,16 @@ export default function LoginPage() {
         );
 
         localStorage.setItem(
-            "token",
-            response.data.token
+          "token",
+          response.data.token
         );
 
-        router.push("/dashboard");
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.user)
+        );
+
+        router.push("/");
 
     } catch (error) {
 
@@ -126,6 +131,16 @@ export default function LoginPage() {
         >
           Login
         </button>
+
+        <p className="text-center mt-4 text-gray-600">
+          Belum punya akun?
+          <a
+            href="/register"
+            className="text-blue-500 ml-1"
+          >
+            Register
+          </a>
+        </p>
 
       </form>
 
